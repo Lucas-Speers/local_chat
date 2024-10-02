@@ -5,7 +5,7 @@ use rsa::pkcs8::LineEnding;
 use crate::BoxedResult;
 
 
-pub const PORT: &str = "1823";
+pub const PORT: u16 = 1823;
 
 pub const LINEENDING: LineEnding = LineEnding::LF;
 
