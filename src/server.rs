@@ -30,6 +30,21 @@ pub fn start() -> BoxedResult<()> {
     let users: ArcLock<Users> = Arc::new(RwLock::new(HashMap::new()));
     let messages: ArcLock<Messages> = Arc::new(RwLock::new(Vec::new()));
 
+    let arc_messages = Arc::clone(&messages);
+
+    std::thread::spawn(move || {
+        loop {
+            {
+                let mut messages_lock = arc_messages.write().unwrap();
+                if messages_lock.len() > 50 {
+                    *messages_lock = messages_lock[messages_lock.len()-50..].to_vec();
+                }
+            }
+
+            thread::sleep(Duration::new(30, 0));
+        }
+    });
+
     for stream in listener.incoming() {
         if let Ok(stream) = stream {
             let keys = keys.clone();
